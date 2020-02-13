@@ -23,15 +23,22 @@ servo3 = 16
 gpio.setmode(gpio.BCM)
 gpio.setup(servo3, gpio.OUT)
 
+servo4 = 17
+gpio.setmode(gpio.BCM)
+gpio.setup(servo4, gpio.OUT)
+
 p = gpio.PWM(servo1, 50)
 aufzu = gpio.PWM(servo2, 50)
 turn = gpio.PWM(servo3, 50)
+frontBack = gpio.PWM(servo4, 50)
 
 p.start(0)
 aufzu.start(0)
 turn.start(0)
+frontBack.start(0)
 
-maxi = 10
+
+
 
 class Controll(GridLayout):
     def __init__(self, **kwargs):
@@ -84,11 +91,18 @@ class Controll(GridLayout):
 	self.add_widget(self.turnaroundValue)
 	self.turnaround.bind(value = self.Turn)
 	
-	self.resett = Button(text="Reset", font_size = 30)
+	self.frontback = Slider (min = 0, max = 20)
+	self.add_widget(Label(text="front and Back"))
+	self.add_widget(self.frontback)
+	self.add_widget(Label(text="Slider Value"))
+	self.frontbackValue = Label(text="0")
+	self.add_widget(self.frontbackValue)
+	self.frontback.bind(value =self.FrontAndBack)
+	
+	'''self.resett = Button(text="Reset", font_size = 30)
 	self.resett.bind(on_press=self.reset)
 	
-	self.add_widget(self.resett)
-	
+	self.add_widget(self.resett)'''
 	
 	
     def Turn(self, instance, brightness):
@@ -113,18 +127,20 @@ class Controll(GridLayout):
 	    #if self.close ==  True:
 		#    aufzu.ChangeDutyCycle(0)
 	    
-	    '''while True:
-		    self.brightnessValue.text = "% d"% brightness
-		    value = brightness
-		     
-		    p.ChangeDutyCycle(value)
-		    time.sleep(1)'''
+	     
 		    
 	     
-    def pressed(self, instance):
-		p.start(2.5)
-		p.ChangeDutyCycle(0)
+    def FrontAndBack(self, instance, brightness):
+	    frontBack.start(0)
+	    value = brightness
+	    frontBack.ChangeDutyCycle(value)
+	    self.frontbackValue.text = "% d"% brightness
+		 
 		
+
+
+
+
     def close(self, instance):
 	aufzu.start(0)
 	aufzu.ChangeDutyCycle(1)
